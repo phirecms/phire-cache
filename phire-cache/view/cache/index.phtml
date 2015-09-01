@@ -1,0 +1,45 @@
+<?php include $phireHeader; ?>
+    <h1 class="cache-header"><?=$title; ?></h1>
+    <form id="cache-form" action="<?=$phireUri . '/cache'; ?>" method="post">
+        <table class="data-table" cellpadding="0" cellspacing="0" border="0">
+            <tr>
+                <th colspan="2">&nbsp;</th>
+            </tr>
+            <tr>
+                <td class="cache-col"><strong>Cache Adapter:</strong></td>
+                <td>
+                    <select name="cache_adapter" id="cache_adapter">
+                        <option value="File"<?=($cacheConfig['cache_adapter'] == 'File') ? ' selected="selected"' : null; ?>>File</option>
+<?php foreach ($cacheConfig['cache_adapters'] as $cacheAdapter): ?>
+                        <option value="<?=$cacheAdapter; ?>"<?=($cacheConfig['cache_adapter'] == $cacheAdapter) ? ' selected="selected"' : null; ?>><?=$cacheAdapter; ?></option>
+<?php endforeach; ?>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="cache-col"><strong>Cache Lifetime:</strong></td>
+                <td>
+                    <input type="text" name="cache_lifetime_value" id="cache_lifetime_value" size="3" value="<?=$cacheConfig['cache_lifetime_value']; ?>" />
+                    <select name="cache_lifetime_unit" id="cache_lifetime_unit">
+                        <option value="Days"<?=($cacheConfig['cache_lifetime_unit'] == 'Days') ? ' selected="selected"' : null; ?>>Days</option>
+                        <option value="Hours"<?=($cacheConfig['cache_lifetime_unit'] == 'Hours') ? ' selected="selected"' : null; ?>>Hours</option>
+                        <option value="Minutes"<?=($cacheConfig['cache_lifetime_unit'] == 'Minutes') ? ' selected="selected"' : null; ?>>Minutes</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="cache-col"><strong>Generate Cache:</strong></td>
+                <td><input type="checkbox" name="cache_generate" id="cache_generate" value="1" /></td>
+            </tr>
+            <tr>
+                <td class="cache-col"><strong>Generate Static Site:</strong></td>
+                <td><input type="checkbox" name="cache_generate_site" id="cache_generate_site" value="1" /></td>
+            </tr>
+            <tr>
+                <td class="cache-col"><strong>Clear Cache:</strong></td>
+                <td><input type="checkbox" name="cache_clear" id="cache_clear" value="1" /></td>
+            </tr>
+        </table>
+        <div id="form-footer"><input type="submit" name="submit" class="process-btn" value="Process" /></div>
+    </form>
+<?php include $phireFooter; ?>

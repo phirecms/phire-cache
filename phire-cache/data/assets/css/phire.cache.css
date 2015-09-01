@@ -1,0 +1,25 @@
+/**
+ * Cache Module Style Sheet for Phire CMS 2
+ */
+
+td.cache-col {
+    padding-right: 15px;
+    width: 20%;
+    text-align: right;
+}
+
+#cache_lifetime_value {
+    margin-right: 5px;
+    padding: 5px 2px 6px 2px;
+    height: 16px;
+    font-size: 1.0em;
+    text-align: center;
+}
+
+#cache_adapter {
+    width: 120px;
+}
+
+#cache_lifetime_unit {
+    width: 80px;
+}
