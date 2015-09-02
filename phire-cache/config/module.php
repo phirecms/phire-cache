@@ -26,6 +26,15 @@ return [
                 'priority' => 1000
             ]
         ],
+        'install' => function() {
+            mkdir($_SERVER['DOCUMENT_ROOT'] . BASE_PATH . CONTENT_PATH . '/cache');
+            chmod($_SERVER['DOCUMENT_ROOT'] . BASE_PATH . CONTENT_PATH . '/cache', 0777);
+            copy(
+                $_SERVER['DOCUMENT_ROOT'] . BASE_PATH . CONTENT_PATH . '/index.html',
+                $_SERVER['DOCUMENT_ROOT'] . BASE_PATH . CONTENT_PATH . '/cache/index.html'
+            );
+            chmod($_SERVER['DOCUMENT_ROOT'] . BASE_PATH . CONTENT_PATH . '/cache/index.html', 0777);
+        },
         'uninstall' => function() {
             $config = \Phire\Table\Config::findById('cache_adapter');
             if (isset($config->setting)) {
@@ -34,6 +43,10 @@ return [
             $config = \Phire\Table\Config::findById('cache_lifetime');
             if (isset($config->setting)) {
                 $config->delete();
+            }
+            if (file_exists($_SERVER['DOCUMENT_ROOT'] . BASE_PATH . CONTENT_PATH . '/cache')) {
+                $dir = new \Pop\File\Dir($_SERVER['DOCUMENT_ROOT'] . BASE_PATH . CONTENT_PATH . '/cache');
+                $dir->emptyDir(true);
             }
         }
     ]
