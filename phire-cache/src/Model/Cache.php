@@ -4,9 +4,47 @@ namespace Phire\Cache\Model;
 
 use Phire\Model\AbstractModel;
 use Phire\Table;
+use Pop\Cache as C;
 
 class Cache extends AbstractModel
 {
+
+    /**
+     * Get cache adapter
+     *
+     * @return mixed
+     */
+    public function getCacheAdapter()
+    {
+        $status   = Table\Config::findById('cache_status');
+        $adapter  = Table\Config::findById('cache_adapter');
+        $lifetime = Table\Config::findById('cache_lifetime');
+        $cache    = null;
+        $dir      = $_SERVER['DOCUMENT_ROOT'] . BASE_PATH . CONTENT_PATH . '/cache';
+
+        if (isset($status->value) && ($status->value) && isset($adapter->value) && isset($lifetime->value)) {
+            switch ($adapter->value) {
+                case 'File':
+                    $cache = new C\Cache(new C\Adapter\File($dir), $lifetime->value);
+                    break;
+                case 'Sqlite':
+                    if (!file_exists($dir . '/' . '.htphirecache.sqlite')) {
+                        touch($dir . '/' . '.htphirecache.sqlite');
+                        chmod($dir . '/' . '.htphirecache.sqlite', 0777);
+                    }
+                    $cache = new C\Cache(new C\Adapter\Sqlite($dir . '/' . '.htphirecache.sqlite'), $lifetime->value);
+                    break;
+                case 'Apc':
+                    $cache = new C\Cache(new C\Adapter\Apc(), $lifetime->value);
+                    break;
+                case 'Memcached':
+                    $cache = new C\Cache(new C\Adapter\Memcached(), $lifetime->value);
+                    break;
+            }
+        }
+
+        return $cache;
+    }
 
     /**
      * Get cache config
@@ -15,6 +53,7 @@ class Cache extends AbstractModel
      */
     public function getConfig()
     {
+        $status   = Table\Config::findById('cache_status');
         $adapter  = Table\Config::findById('cache_adapter');
         $lifetime = Table\Config::findById('cache_lifetime');
         $adapters = [];
@@ -28,6 +67,7 @@ class Cache extends AbstractModel
         }
 
         if (isset($lifetime->value)) {
+            $cacheStatus   = (int)$status->value;
             $cacheLifetime = $lifetime->value;
             // Days
             if ($cacheLifetime >= 86400) {
@@ -43,12 +83,14 @@ class Cache extends AbstractModel
                 $cacheLifetimeUnit  = 'Minutes';
             }
         } else {
+            $cacheStatus        = 0;
             $cacheLifetime      = 0;
             $cacheLifetimeValue = 0;
             $cacheLifetimeUnit  = null;
         }
 
         $config = [
+            'cache_status'         => $cacheStatus,
             'cache_adapter'        => (isset($adapter->value) ? $adapter->value : null),
             'cache_lifetime'       => $cacheLifetime,
             'cache_lifetime_value' => $cacheLifetimeValue,
@@ -67,6 +109,18 @@ class Cache extends AbstractModel
      */
     public function save(array $post)
     {
+        if (isset($post['cache_status'])) {
+            $config = Table\Config::findById('cache_status');
+            if (isset($config->value)) {
+                $config->value = (int)$post['cache_status'];
+            } else {
+                $config = new Table\Config([
+                    'setting' => 'cache_status',
+                    'value'   => (int)$post['cache_status']
+                ]);
+            }
+            $config->save();
+        }
         if (isset($post['cache_adapter']) && !empty($post['cache_adapter'])) {
             $config = Table\Config::findById('cache_adapter');
             if (isset($config->value)) {
@@ -108,6 +162,20 @@ class Cache extends AbstractModel
                 ]);
             }
             $config->save();
+        }
+
+        if (isset($post['cache_clear']) && ($post['cache_clear'])) {
+            $cache = $this->getCacheAdapter();
+            if (null !== $cache) {
+                $cache->clear();
+                if (!file_exists($_SERVER['DOCUMENT_ROOT'] . BASE_PATH . CONTENT_PATH . '/cache/index.html')) {
+                    copy(
+                        $_SERVER['DOCUMENT_ROOT'] . BASE_PATH . CONTENT_PATH . '/index.html',
+                        $_SERVER['DOCUMENT_ROOT'] . BASE_PATH . CONTENT_PATH . '/cache/index.html'
+                    );
+                    chmod($_SERVER['DOCUMENT_ROOT'] . BASE_PATH . CONTENT_PATH . '/cache/index.html', 0777);
+                }
+            }
         }
     }
 

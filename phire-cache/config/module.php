@@ -21,8 +21,13 @@ return [
         ],
         'events' => [
             [
-                'name'     => 'app.route.pre',
-                'action'   => 'Phire\Cache\Event\Cache::bootstrap',
+                'name'     => 'app.route.post',
+                'action'   => 'Phire\Cache\Event\Cache::load',
+                'priority' => 1000
+            ],
+            [
+                'name'     => 'app.dispatch.post',
+                'action'   => 'Phire\Cache\Event\Cache::save',
                 'priority' => 1000
             ]
         ],

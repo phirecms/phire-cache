@@ -6,6 +6,15 @@
                 <th colspan="2">&nbsp;</th>
             </tr>
             <tr>
+                <td class="cache-col"><strong>Cache Status:</strong></td>
+                <td>
+                    <select name="cache_status" id="cache_status">
+                        <option value="0"<?=(!$cacheConfig['cache_status']) ? ' selected="selected"' : null; ?>>Off</option>
+                        <option value="1"<?=($cacheConfig['cache_status']) ? ' selected="selected"' : null; ?>>On</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
                 <td class="cache-col"><strong>Cache Adapter:</strong></td>
                 <td>
                     <select name="cache_adapter" id="cache_adapter">
@@ -26,14 +35,6 @@
                         <option value="Minutes"<?=($cacheConfig['cache_lifetime_unit'] == 'Minutes') ? ' selected="selected"' : null; ?>>Minutes</option>
                     </select>
                 </td>
-            </tr>
-            <tr>
-                <td class="cache-col"><strong>Generate Cache:</strong></td>
-                <td><input type="checkbox" name="cache_generate" id="cache_generate" value="1" /></td>
-            </tr>
-            <tr>
-                <td class="cache-col"><strong>Generate Static Site:</strong></td>
-                <td><input type="checkbox" name="cache_generate_site" id="cache_generate_site" value="1" /></td>
             </tr>
             <tr>
                 <td class="cache-col"><strong>Clear Cache:</strong></td>

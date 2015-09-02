@@ -16,7 +16,7 @@ td.cache-col {
     text-align: center;
 }
 
-#cache_adapter {
+#cache_status, #cache_adapter {
     width: 120px;
 }
 
