@@ -20,7 +20,7 @@ class IndexController extends AbstractController
 
         if ($this->request->isPost()) {
             $cache->save($this->request->getPost());
-            $this->sess->setRequestValue('saved', true, 1);
+            $this->sess->setRequestValue('saved', true);
             $this->redirect(BASE_PATH . APP_URI . '/cache');
         } else {
             $this->view->title       = 'Cache Configuration';
