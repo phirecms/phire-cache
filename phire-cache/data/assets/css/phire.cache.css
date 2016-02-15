@@ -9,15 +9,16 @@ td.cache-col {
 }
 
 #cache_lifetime_value {
-    margin-right: 5px;
-    padding: 5px 2px 6px 2px;
-    height: 16px;
+    margin-right: 9px;
+    padding: 5px 4px 6px 4px;
+    height: 21px;
+    float: left;
     font-size: 1.0em;
     text-align: center;
 }
 
 #cache_status, #cache_adapter {
-    width: 120px;
+    width: 128px;
 }
 
 #cache_lifetime_unit {

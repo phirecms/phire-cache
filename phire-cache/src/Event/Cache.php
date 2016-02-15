@@ -24,6 +24,10 @@ class Cache
             if ((null !== $cache) && !isset($sess->user)) {
                 if ($cache->load($uri) !== false) {
                     $content = $cache->load($uri);
+                    $application->router()->getController()->response()->setHeader('Expires', date('D, j M Y H:i:s T', time() + 2592000));
+                    $application->router()->getController()->response()->setHeader('Last-Modified', date('D, j M Y H:i:s T', time() - 1592000));
+                    $application->router()->getController()->response()->setHeader('Cache-Control', 'max-age=2592000, public, must-revalidate');
+                    $application->router()->getController()->response()->setHeader('Etag', '"' . sha1($uri) . '"');
                     $application->router()->getController()->response()->setBody($content['body']);
                     $application->router()->getController()->send(200, ['Content-Type' => $content['content-type']]);
                     exit();
