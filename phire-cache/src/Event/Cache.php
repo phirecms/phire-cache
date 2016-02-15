@@ -33,7 +33,9 @@ class Cache
                     $application->router()->getController()->response()->setHeader(
                         'Expires', date('D, j M Y H:i:s T', $cache->getExpiration($uri))
                     );
-                    $application->router()->getController()->response()->setHeader('Etag', '"' . sha1($uri) . '"');
+                    $application->router()->getController()->response()->setHeader(
+                        'Etag', '"' . sha1($uri . '-' . $cache->getStart($uri)) . '"'
+                    );
                     $application->router()->getController()->response()->setBody($content['body']);
                     $application->router()->getController()->send(200, ['Content-Type' => $content['content-type']]);
                     exit();
