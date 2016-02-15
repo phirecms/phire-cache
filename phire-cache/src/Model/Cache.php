@@ -25,20 +25,20 @@ class Cache extends AbstractModel
         if (isset($status->value) && ($status->value) && isset($adapter->value) && isset($lifetime->value)) {
             switch ($adapter->value) {
                 case 'File':
-                    $cache = new C\Cache(new C\Adapter\File($dir), $lifetime->value);
+                    $cache = new C\Cache(new C\Adapter\File($dir, $lifetime->value));
                     break;
                 case 'Sqlite':
                     if (!file_exists($dir . '/' . '.htphirecache.sqlite')) {
                         touch($dir . '/' . '.htphirecache.sqlite');
                         chmod($dir . '/' . '.htphirecache.sqlite', 0777);
                     }
-                    $cache = new C\Cache(new C\Adapter\Sqlite($dir . '/' . '.htphirecache.sqlite'), $lifetime->value);
+                    $cache = new C\Cache(new C\Adapter\Sqlite($dir . '/' . '.htphirecache.sqlite', $lifetime->value));
                     break;
                 case 'Apc':
-                    $cache = new C\Cache(new C\Adapter\Apc(), $lifetime->value);
+                    $cache = new C\Cache(new C\Adapter\Apc($lifetime->value));
                     break;
                 case 'Memcached':
-                    $cache = new C\Cache(new C\Adapter\Memcached(), $lifetime->value);
+                    $cache = new C\Cache(new C\Adapter\Memcached($lifetime->value));
                     break;
             }
         }
@@ -121,10 +121,17 @@ class Cache extends AbstractModel
             }
             $config->save();
         }
+
+        $oldAdapter = null;
         if (isset($post['cache_adapter']) && !empty($post['cache_adapter'])) {
             $config = Table\Config::findById('cache_adapter');
             if (isset($config->value)) {
+                $oldAdapter    = $config->value;
                 $config->value = $post['cache_adapter'];
+
+                if ($oldAdapter != $post['cache_adapter']) {
+                    $this->clear();
+                }
             } else {
                 $config = new Table\Config([
                     'setting' => 'cache_adapter',
@@ -165,16 +172,29 @@ class Cache extends AbstractModel
         }
 
         if (isset($post['cache_clear']) && ($post['cache_clear'])) {
-            $cache = $this->getCacheAdapter();
-            if (null !== $cache) {
-                $cache->clear();
-                if (!file_exists($_SERVER['DOCUMENT_ROOT'] . BASE_PATH . CONTENT_PATH . '/cache/index.html')) {
-                    copy(
-                        $_SERVER['DOCUMENT_ROOT'] . BASE_PATH . CONTENT_PATH . '/index.html',
-                        $_SERVER['DOCUMENT_ROOT'] . BASE_PATH . CONTENT_PATH . '/cache/index.html'
-                    );
-                    chmod($_SERVER['DOCUMENT_ROOT'] . BASE_PATH . CONTENT_PATH . '/cache/index.html', 0777);
-                }
+            $this->clear();
+        }
+    }
+
+    /**
+     * Clear cache
+     *
+     * @return void
+     */
+    public function clear()
+    {
+        $cache = $this->getCacheAdapter();
+        if (null !== $cache) {
+            $cache->clear();
+            if ($cache->adapter() instanceof C\Adapter\Sqlite) {
+                $cache->adapter()->delete();
+            }
+            if (!file_exists($_SERVER['DOCUMENT_ROOT'] . BASE_PATH . CONTENT_PATH . '/cache/index.html')) {
+                copy(
+                    $_SERVER['DOCUMENT_ROOT'] . BASE_PATH . CONTENT_PATH . '/index.html',
+                    $_SERVER['DOCUMENT_ROOT'] . BASE_PATH . CONTENT_PATH . '/cache/index.html'
+                );
+                chmod($_SERVER['DOCUMENT_ROOT'] . BASE_PATH . CONTENT_PATH . '/cache/index.html', 0777);
             }
         }
     }
