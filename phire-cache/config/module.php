@@ -53,6 +53,7 @@ return [
                 $dir = new \Pop\File\Dir($_SERVER['DOCUMENT_ROOT'] . BASE_PATH . CONTENT_PATH . '/cache');
                 $dir->emptyDir(true);
             }
-        }
+        },
+        'exclude' => []
     ]
 ];
