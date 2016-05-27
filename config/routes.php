@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * phire-cache routes
+ */
 return [
     APP_URI => [
         '/cache[/]' => [

@@ -1,10 +1,31 @@
 <?php
+/**
+ * Phire Cache Module
+ *
+ * @link       https://github.com/phirecms/phire-content
+ * @author     Nick Sagona, III <dev@nolainteractive.com>
+ * @copyright  Copyright (c) 2009-2016 NOLA Interactive, LLC. (http://www.nolainteractive.com)
+ * @license    http://www.phirecms.org/license     New BSD License
+ */
 
+/**
+ * @namespace
+ */
 namespace Phire\Cache\Controller;
 
 use Phire\Cache\Model;
 use Phire\Controller\AbstractController;
 
+/**
+ * Cache Index Controller class
+ *
+ * @category   Phire\Cache
+ * @package    Phire\Cache
+ * @author     Nick Sagona, III <dev@nolainteractive.com>
+ * @copyright  Copyright (c) 2009-2016 NOLA Interactive, LLC. (http://www.nolainteractive.com)
+ * @license    http://www.phirecms.org/license     New BSD License
+ * @version    1.0.0
+ */
 class IndexController extends AbstractController
 {
 
