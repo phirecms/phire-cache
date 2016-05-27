@@ -2,7 +2,7 @@
 /**
  * Phire Cache Module
  *
- * @link       https://github.com/phirecms/phire-content
+ * @link       https://github.com/phirecms/phire-cache
  * @author     Nick Sagona, III <dev@nolainteractive.com>
  * @copyright  Copyright (c) 2009-2016 NOLA Interactive, LLC. (http://www.nolainteractive.com)
  * @license    http://www.phirecms.org/license     New BSD License
