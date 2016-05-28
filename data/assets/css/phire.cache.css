@@ -24,3 +24,17 @@ td.cache-col {
 #cache_lifetime_unit {
     width: 80px;
 }
+
+.cache-header {
+    margin: 10px 0 10px 0;
+    padding: 10px 0 10px 0;
+}
+
+.cache-header:before {
+    font-family: "FontAwesome";
+    font-weight: normal;
+    content: "\f1c0";
+    margin: 0;
+    padding: 0 8px 0 0;
+    color: #b4b5b4;
+}
